@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools >= 68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dqc-toolkit"
+version = "0.1.0-rc1"
+authors = [
+  { name="Sumanth S Prabhu", email="sumanthprabhu.104@gmail.com" },
+]
+description = "Data Quality Check for Machine Learning"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.9"
+dependencies = [
+    "transformers>=4.39",
+    "sentence_transformers>=2.6.1",
+    "datasets>=2.18",
+    "scikit-learn>=1.3.2",
+    "ruff>=0.3.4"
+]
+keywords = [
+  "nlp", 
+  "data curation", 
+  "machine learning"
+]
+classifiers = [
+	"Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+[project.optional-dependencies]
+docs = [
+	"mkdocs==1.5.3",
+	"mkdocs-material==9.5.17",
+	"mkdocstrings[python]==1.9.2",
+	"mkdocstrings-crystal==0.3.7"
+]
+test = [
+    "pytest>=8.1.1"
+]
+dev = [
+  "pytest>=8.1.1",
+	"mkdocs==1.5.3",
+	"mkdocs-material==9.5.17",
+	"mkdocstrings[python]==0.24.3",
+	"mkdocstrings-crystal==0.3.7"
+]
+[project.urls]
+Homepage = "https://github.com/sumanthprabhu/DQC-Toolkit"
+Source = "https://github.com/sumanthprabhu/DQC-Toolkit"
+Tracker = "https://github.com/sumanthprabhu/DQC-Toolkit/issues"
+
+[tool.setuptools.packages.find]
+exclude=["notebooks", "docs"]
+
+[tool.ruff]
+lint.ignore = [
+    "F401",  # Ignore 'unused import' error
+]
