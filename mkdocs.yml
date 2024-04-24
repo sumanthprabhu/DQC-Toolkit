@@ -49,3 +49,5 @@ markdown_extensions:
 
 plugins:
   - mkdocstrings
+  - search
+copyright: Copyright &copy; 2024 Maintained by <a href="https://github.com/sumanthprabhu">Sumanth Prabhu</a>
