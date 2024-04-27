@@ -1,4 +1,7 @@
 site_name: DQC toolkit
+repo_url: https://github.com/sumanthprabhu/DQC-Toolkit
+site_url: https://sumanthprabhu.github.io/DQC-Toolkit/
+site_author: Sumanth Prabhu
 nav:
   - DQC toolkit: index.md
   - API Documentation:
@@ -50,4 +53,10 @@ markdown_extensions:
 plugins:
   - mkdocstrings
   - search
+  - mike
+
+extra:
+  version:
+    provider: mike
+    
 copyright: Copyright &copy; 2024 Maintained by <a href="https://github.com/sumanthprabhu">Sumanth Prabhu</a>
