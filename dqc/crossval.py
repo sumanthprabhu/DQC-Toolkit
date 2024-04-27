@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.base import ClassifierMixin
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import normalize
 from tqdm import tqdm
 
 from dqc.base import BaseCurate
@@ -64,7 +64,7 @@ class CrossValCurate(BaseCurate):
         ] = "TfidfVectorizer",
         curate_model: Union[str, ClassifierMixin] = LogisticRegression(),
         calibration_method: Union[str, None] = "calibrate_using_baseline",
-        correctness_threshold: float = 0.5,
+        correctness_threshold: float = 0.0,
         n_splits: int = 5,
         verbose: bool = False,
         **options,
@@ -121,7 +121,7 @@ class CrossValCurate(BaseCurate):
         """
         threshold = self.correctness_threshold
         if (row["predicted_label"] == row[self.y_col_name_int]) and (
-            row["label_correctness_score"] > threshold
+            row["label_correctness_score"] >= threshold
         ):
             return True
         return False
@@ -223,12 +223,11 @@ class CrossValCurate(BaseCurate):
         baseline_probs.drop("label_list", axis=1, inplace=True)
 
         prob_array = baseline_probs["probability"].values
+
+        # Calibrate prediction probabilities using baseline probabilities
         pred_prob_matrix = (pred_prob_matrix - prob_array) / prob_array
 
-        if not self.scaler:
-            self.scaler = MinMaxScaler()
-
-        pred_prob_matrix = self.scaler.fit_transform(pred_prob_matrix)
+        pred_prob_matrix = normalize(pred_prob_matrix, norm="l2")
 
         calibrated_predictions = [
             label_list[index] for index in np.argmax(pred_prob_matrix, axis=1)
