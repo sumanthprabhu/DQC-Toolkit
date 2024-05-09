@@ -68,6 +68,8 @@ def run_cvc(
         ]
     )
 
+    assert len(data_curated.columns) == len(sampled_data.columns) + 4
+
     # Check data types
     assert all(
         data_curated[col].dtype == dtype
