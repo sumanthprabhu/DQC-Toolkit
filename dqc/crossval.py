@@ -163,20 +163,18 @@ class CrossValCurate(BaseCurate):
 
         return preds, pred_probs, label_correctness_scores
 
-    def _get_baselines(self, data_with_noisy_labels: pd.DataFrame) -> pd.DataFrame:
+    def _get_baselines(self, input_data: pd.DataFrame) -> pd.DataFrame:
         """Computes the baseline prediction probabilities using
           input label distribution
 
         Args:
-            data_with_noisy_labels (pd.DataFrame): Input data with
+            input_data (pd.DataFrame): Input data with
                                             corresponding noisy labels
 
         Returns:
             pd.DataFrame: Labels and corresponding probabilities
         """
-        thresholds_df = (
-            data_with_noisy_labels[self.y_col_name_int].value_counts(1)
-        ).reset_index()
+        thresholds_df = (input_data[self.y_col_name_int].value_counts(1)).reset_index()
         thresholds_df.columns = [self.y_col_name_int, "probability"]
         return thresholds_df
 
@@ -270,16 +268,15 @@ class CrossValCurate(BaseCurate):
         n_splits = self.n_splits
         options["num_samples"] = len(data_with_noisy_labels)
 
-        # TBD
-        # 'max_features': min(options["num_samples"] // 10, options.get("max_features", 1000))
-
+        # Make a copy of `data_with_noisy_labels` to prevent accidental modification
+        input_data = data_with_noisy_labels.copy()
         logger.info("Pre-processing the data..")
         dp = _DataProcessor(
             random_state=self.random_state,
         )
 
-        data_with_noisy_labels, row_id_col, y_col_name_int = dp._preprocess(
-            data_with_noisy_labels, y_col_name=y_col_name
+        input_data, row_id_col, y_col_name_int = dp._preprocess(
+            input_data, y_col_name=y_col_name
         )
 
         # y_col_name_int needs to be accessed downstream
@@ -294,7 +291,7 @@ class CrossValCurate(BaseCurate):
         )
 
         split_indices = _data_splitter(
-            data_with_noisy_labels,
+            input_data,
             X_col_name=X_col_name,
             y_col_name_int=y_col_name_int,
             n_splits=self.n_splits,
@@ -310,18 +307,18 @@ class CrossValCurate(BaseCurate):
 
         if self.calibration_method == "calibrate_using_baseline":
             logger.info("Computing baseline predictions for each label..")
-            baseline_probs = self._get_baselines(data_with_noisy_labels[data_columns])
+            baseline_probs = self._get_baselines(input_data[data_columns])
 
         # Iterate through kfold splits
         for train_index, val_index in tqdm(split_indices):
             # Split the data
             X_train, X_val = (
-                data_with_noisy_labels.loc[train_index, X_col_name].values,
-                data_with_noisy_labels.loc[val_index, X_col_name].values,
+                input_data.loc[train_index, X_col_name].values,
+                input_data.loc[val_index, X_col_name].values,
             )
             y_train, y_val = (
-                data_with_noisy_labels.loc[train_index, y_col_name_int].values,
-                data_with_noisy_labels.loc[val_index, y_col_name_int].values,
+                input_data.loc[train_index, y_col_name_int].values,
+                input_data.loc[val_index, y_col_name_int].values,
             )
 
             # Train the model
@@ -346,30 +343,25 @@ class CrossValCurate(BaseCurate):
             predictions.extend(y_preds)
             prediction_probabilities.extend(y_pred_probs)
             label_correctness_scores.extend(label_cscores)
-            row_ids.extend(data_with_noisy_labels.loc[val_index, row_id_col].values)
+            row_ids.extend(input_data.loc[val_index, row_id_col].values)
 
         # Order dataframe according to `rowids``
 
         row_id_df = pd.DataFrame()
         row_id_df[row_id_col] = pd.Series(row_ids)
-        data_with_noisy_labels = pd.merge(
-            row_id_df, data_with_noisy_labels, how="left", on=row_id_col
-        )
+        input_data = pd.merge(row_id_df, input_data, how="left", on=row_id_col)
 
         # Add results as columns
-        data_with_noisy_labels["label_correctness_score"] = pd.Series(
-            label_correctness_scores
-        )
-        data_with_noisy_labels["predicted_label"] = pd.Series(predictions)
-        data_with_noisy_labels["prediction_probability"] = pd.Series(
-            prediction_probabilities
-        )
+        input_data["label_correctness_score"] = pd.Series(label_correctness_scores)
+        input_data["predicted_label"] = pd.Series(predictions)
+        input_data["prediction_probability"] = pd.Series(prediction_probabilities)
 
         logger.info("Identifying the correctly labelled samples..")
-        data_with_noisy_labels["is_label_correct"] = (
-            data_with_noisy_labels.progress_apply(self._is_confident, axis=1)
+        input_data["is_label_correct"] = input_data.progress_apply(
+            self._is_confident, axis=1
         )
 
         return dp._postprocess(
-            data_with_noisy_labels, display_cols=data_columns + self.result_col_list
+            input_data,
+            display_cols=list(data_with_noisy_labels.columns) + self.result_col_list,
         )
