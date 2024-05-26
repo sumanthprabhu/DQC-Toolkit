@@ -86,7 +86,7 @@ class _DataProcessor:
 
     def _convert_labels_to_int(
         self, df: pd.DataFrame, y_col_name: str
-    ) -> Tuple[pd.DataFrame, str]:
+    ) -> Tuple[pd.DataFrame, str, dict]:
         """Map string labels to integers and add them as a new column in the data
         for downstream processing
 
@@ -94,11 +94,12 @@ class _DataProcessor:
             df (pd.DataFrame): Data with labels
         Returns:
             pd.DataFrame: Data with integer labels
-            str: newly added column name for integer labels
+            str: Newly added column name for integer labels
+            dict: Mapping from new integer labels to original labels
         """
 
         if not df[y_col_name].dtype == "object":
-            return df, y_col_name
+            return df, y_col_name, {}
 
         # Generate a unique column name
         y_col_name_int = self._create_col_name(df.columns, base_col_name="label_int")
@@ -107,10 +108,13 @@ class _DataProcessor:
         unique_labels = df[y_col_name].unique()
         label_mapping = {text: i for i, text in enumerate(unique_labels)}
 
+        # Create an inverse mapping to map integers back to the original string values
+        inv_label_mapping = {label_mapping[text]: text for text in label_mapping}
+
         # Map string values to integers and create a new column
         df[y_col_name_int] = df[y_col_name].map(label_mapping)
 
-        return df, y_col_name_int
+        return df, y_col_name_int, inv_label_mapping
 
     def _preprocess(
         self, df: pd.DataFrame, y_col_name: str
@@ -126,28 +130,47 @@ class _DataProcessor:
         Returns:
             pd.DataFrame: Data with added columns
             str: Name of the newly added column
+            dict: Mapping from new integer labels to original labels
+
         """
 
-        df, y_col_name_int = self._convert_labels_to_int(df, y_col_name)
+        df, y_col_name_int, inv_label_mapping = self._convert_labels_to_int(
+            df, y_col_name
+        )
 
         df, row_id_col = self._add_row_id(df)
         df = self._shuffle_data(df)
 
-        return df, row_id_col, y_col_name_int
+        return df, row_id_col, y_col_name_int, inv_label_mapping
 
-    def _postprocess(self, df: pd.DataFrame, display_cols: List[str]) -> pd.DataFrame:
+    def _postprocess(
+        self,
+        df: pd.DataFrame,
+        display_cols: List[str],
+        inv_label_mapping: dict,
+        predicted_label_int_col: str = "predicted_label_int",
+        predicted_label_col: str = "predicted_label",
+    ) -> pd.DataFrame:
         """Removes redundant columns and returns the data
         with selected columns to display
 
         Args:
             df (pd.DataFrame): Data to be processed
             display_cols (List[str]): Non redundant columns in data
+            inv_label_mapping (dict): Mapping from new integer labels to original labels
+            predicted_label_int_col (str, optional): Name of the column in `df` that contains the `curate_model` predictions. Defaults to 'predicted_label_int'.
+            predicted_label_col (str, optional): Name of the column that should contain the final predictions. Defaults to 'predicted_label'.
 
         Returns:
             pd.DataFrame: Data after post-processing data
         """
 
         row_id_col = self.row_id_col
+
+        if inv_label_mapping:
+            df[predicted_label_col] = df[predicted_label_int_col].map(inv_label_mapping)
+        else:
+            df[predicted_label_col] = df[predicted_label_int_col]
 
         if not row_id_col:
             return df[display_cols]

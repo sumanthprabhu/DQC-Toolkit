@@ -52,6 +52,20 @@ def _check_columns(data: pd.DataFrame, X_col_name: str, y_col_name: str):
         )
 
 
+def _check_blank_values(series: pd.Series):
+    """Sanity checks to detect blank values in the input series
+
+    Args:
+        series (pd.Series): The Pandas Series object potentially containing blank values
+
+    Returns:
+        bool: `True` if `series` contains blank values else `False`
+    """
+    series_stripped = series.astype(str).str.strip()
+
+    return (series_stripped == "").any()
+
+
 def _check_null_values(data: pd.DataFrame, X_col_name: str, y_col_name: str):
     """Sanity checks to detect null values in data
 
@@ -66,6 +80,12 @@ def _check_null_values(data: pd.DataFrame, X_col_name: str, y_col_name: str):
     if any(data[col].isnull().any() for col in [X_col_name, y_col_name]):
         raise ValueError(
             "Null values found in the data. \
+                    Automatically imputing missing values is not supported yet."
+        )
+
+    if _check_blank_values(data[y_col_name]):
+        raise ValueError(
+            f"Column '{y_col_name}' contains blank values. \
                     Automatically imputing missing values is not supported yet."
         )
 
