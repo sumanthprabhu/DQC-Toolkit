@@ -120,7 +120,7 @@ class CrossValCurate(BaseCurate):
                 else `False`
         """
         threshold = self.correctness_threshold
-        if (row["predicted_label"] == row[self.y_col_name_int]) and (
+        if (row["predicted_label_int"] == row[self.y_col_name_int]) and (
             row["label_correctness_score"] >= threshold
         ):
             return True
@@ -275,7 +275,7 @@ class CrossValCurate(BaseCurate):
             random_state=self.random_state,
         )
 
-        input_data, row_id_col, y_col_name_int = dp._preprocess(
+        input_data, row_id_col, y_col_name_int, inv_label_mapping = dp._preprocess(
             input_data, y_col_name=y_col_name
         )
 
@@ -353,7 +353,8 @@ class CrossValCurate(BaseCurate):
 
         # Add results as columns
         input_data["label_correctness_score"] = pd.Series(label_correctness_scores)
-        input_data["predicted_label"] = pd.Series(predictions)
+        input_data["predicted_label_int"] = pd.Series(predictions)
+
         input_data["prediction_probability"] = pd.Series(prediction_probabilities)
 
         logger.info("Identifying the correctly labelled samples..")
@@ -364,4 +365,5 @@ class CrossValCurate(BaseCurate):
         return dp._postprocess(
             input_data,
             display_cols=list(data_with_noisy_labels.columns) + self.result_col_list,
+            inv_label_mapping=inv_label_mapping,
         )

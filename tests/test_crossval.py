@@ -1,6 +1,8 @@
 from collections import Counter
 from io import StringIO
+from typing import Tuple
 
+import numpy as np
 import pandas as pd
 import pytest
 from sentence_transformers import SentenceTransformer
@@ -36,6 +38,27 @@ def sample_dataframe_for_stratified_split(
     )
 
 
+def replace_with_invalid(
+    series: pd.Series, replace_ratio: float = 0.1, to_replace: Tuple[None, str] = ""
+) -> pd.Series:
+    """Util function to modify the input series by replacing values randomly with a chosen `invalid` entry
+
+    Args:
+        series (pd.Series): Pandas Series to modify
+        replace_ratio (float, optional): _description_. Defaults to 0.1.
+        to_replace (Tuple[None, str], optional): _description_. Defaults to ''.
+
+    Returns:
+        pd.Series: _description_
+    """
+    num_invalid = int(len(series) * replace_ratio)
+    indices_to_replace = np.random.choice(series.index, size=num_invalid, replace=False)
+
+    series.loc[indices_to_replace] = to_replace
+
+    return series
+
+
 def run_cvc(
     data,
     curate_feature_extractor,
@@ -43,6 +66,7 @@ def run_cvc(
     n_splits,
     calibration_method,
     random_state,
+    label_column,
 ):
     sampled_data = sample_dataframe_for_stratified_split(data, n_splits)
     cvc = CrossValCurate(
@@ -52,7 +76,7 @@ def run_cvc(
         calibration_method=calibration_method,
         random_state=random_state,
     )
-    data_curated = cvc.fit_transform(sampled_data)
+    data_curated = cvc.fit_transform(sampled_data, y_col_name=label_column)
 
     # Check if dataframe is return
     assert type(data_curated) == pd.DataFrame
@@ -91,6 +115,11 @@ def run_cvc(
         ]
     )
 
+    # Check datatype match between predicted label and input label
+    assert type(data_curated["predicted_label"].values[0]) == type(
+        sampled_data[label_column].values[0]
+    )
+
     print(cvc, file=sio)
     result = sio.getvalue().strip()
     assert result.startswith("{") and result.endswith("}")
@@ -119,6 +148,7 @@ def test_crossvalcurate_success_feature_and_model(
     n_splits,
     calibration_method=None,
     random_state=None,
+    label_column="label",
 ):
     run_cvc(
         data,
@@ -127,6 +157,7 @@ def test_crossvalcurate_success_feature_and_model(
         n_splits,
         calibration_method,
         random_state,
+        label_column,
     )
 
 
@@ -139,6 +170,7 @@ def test_crossvalcurate_success_calibration_and_randomstate(
     curate_feature_extractor="TfidfVectorizer",
     curate_model=LogisticRegression(),
     n_splits=5,
+    label_column="label",
 ):
     run_cvc(
         data,
@@ -147,6 +179,28 @@ def test_crossvalcurate_success_calibration_and_randomstate(
         n_splits,
         calibration_method,
         random_state,
+        label_column,
+    )
+
+
+@pytest.mark.parametrize("label_column", ["label_text"])
+def test_crossvalcurate_success_text_label(
+    data,
+    label_column,
+    calibration_method=None,
+    random_state=None,
+    curate_feature_extractor="TfidfVectorizer",
+    curate_model=LogisticRegression(),
+    n_splits=5,
+):
+    run_cvc(
+        data,
+        curate_feature_extractor,
+        curate_model,
+        n_splits,
+        calibration_method,
+        random_state,
+        label_column,
     )
 
 
@@ -165,6 +219,7 @@ def test_crossvalcurate_success_sentence_transformers(
     curate_model=LogisticRegression(),
     random_state=None,
     n_splits=5,
+    label_column="label",
 ):
     run_cvc(
         data,
@@ -173,6 +228,7 @@ def test_crossvalcurate_success_sentence_transformers(
         n_splits,
         calibration_method,
         random_state,
+        label_column,
     )
 
 
@@ -212,6 +268,30 @@ def test_crossvalcurate_datafailure(data):
             frac=0.005, random_state=43
         )
         data = cvc.fit_transform(data)
+
+
+def test_crossvalcurate_valuesfailure(data):
+    with pytest.raises(ValueError):
+        cvc = CrossValCurate()
+
+        # Make a copy of the data to ensure downstream tests aren't affected
+        data_copy = data.copy()
+
+        # Null values in text column
+        data_copy["text_modified"] = replace_with_invalid(
+            data_copy["text"], to_replace=None
+        )
+        data_modified = cvc.fit_transform(data_copy, X_col_name="text_modified")
+
+        # Null values in label column
+        data_copy["label_modified"] = replace_with_invalid(
+            data_copy["label"], to_replace=None
+        )
+        data_modified = cvc.fit_transform(data_copy, y_col_name="label_modified")
+
+        # Blank values in label column
+        data_copy["label_text_modified"] = replace_with_invalid(data_copy["label_text"])
+        data_modified = cvc.fit_transform(data_copy, y_col_name="label_text_modified")
 
 
 @pytest.mark.parametrize("calibration_method", [None, "calibrate_using_baseline"])
