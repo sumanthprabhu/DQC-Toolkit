@@ -1,5 +1,8 @@
-![](https://img.shields.io/github/actions/workflow/status/sumanthprabhu/DQC-Toolkit/test.yml) ![](https://img.shields.io/website?url=https%3A%2F%2Fsumanthprabhu.github.io%2FDQC-Toolkit%2F&label=docs
-) ![](https://img.shields.io/pypi/pyversions/DQC-Toolkit) ![](https://img.shields.io/pypi/v/DQC-Toolkit) ![](https://img.shields.io/pypi/l/DQC-toolkit)
+<a href="https://github.com/sumanthprabhu/DQC-Toolkit/actions" alt="Build Status"><img src='https://img.shields.io/github/actions/workflow/status/sumanthprabhu/DQC-Toolkit/test.yml' alt="Build status"/></a> 
+<a href="https://sumanthprabhu.github.io/DQC-Toolkit/latest/" alt="Docs Status"><img src='https://img.shields.io/website?url=https%3A%2F%2Fsumanthprabhu.github.io%2FDQC-Toolkit%2F&label=docs' alt="Docs status"/></a>
+<a href='https://pypi.org/project/dqc-toolkit/'><img src='https://img.shields.io/pypi/pyversions/DQC-Toolkit' alt="Python version"/></a>
+<a href='https://pypi.org/project/dqc-toolkit/'><img src='https://img.shields.io/pypi/v/DQC-Toolkit' alt='Pypi version' /></a> 
+<a href='https://github.com/sumanthprabhu/DQC-Toolkit/blob/main/LICENSE'><img src='https://img.shields.io/pypi/l/DQC-toolkit' alt='Licence' /></a>
 
 ![](/docs/images/dqc-toolkit.svg)
 
