@@ -536,7 +536,7 @@
           <td>
             <div class="doc-md-description">
               <p>Random seed for
-                    reproducibility. Defaults to None.</p>
+                    reproducibility. Defaults to 42.</p>
             </div>
           </td>
           <td>
@@ -571,7 +571,7 @@
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a>
 <a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">        random_state (RandomState, optional): Random seed for</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">                                reproducibility. Defaults to None.</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">                                reproducibility. Defaults to 42.</span>
 <a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-15" name="__codelineno-0-15"></a>
 <a id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1073,7 +1073,9 @@ Assuming <code>data</code> is a pandas dataframe containing samples with noisy l
 <span class="normal"><a href="#__codelineno-0-364">364</a></span>
 <span class="normal"><a href="#__codelineno-0-365">365</a></span>
 <span class="normal"><a href="#__codelineno-0-366">366</a></span>
-<span class="normal"><a href="#__codelineno-0-367">367</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="k">class</span> <span class="nc">CrossValCurate</span><span class="p">(</span><span class="n">BaseCurate</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-367">367</a></span>
+<span class="normal"><a href="#__codelineno-0-368">368</a></span>
+<span class="normal"><a href="#__codelineno-0-369">369</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="k">class</span> <span class="nc">CrossValCurate</span><span class="p">(</span><span class="n">BaseCurate</span><span class="p">):</span>
 <a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">        curate_feature_extractor (Union[str, TfidfVectorizer, CountVectorizer, SentenceTransformer], optional): Feature extraction method to be used during curation. Accepts string values &#39;TfidfVectorizer&#39;, &#39;CountVectorizer&#39; which map to `sklearn.feature_extraction.text.TfidfVectorizer` and `sklearn.feature_extraction.text.CountVectorizer` objects respectively. Also accepts explicit instances of `sklearn.feature_extraction.text.TfidfVectorizer` / `sklearn.feature_extraction.text.CountVectorizer`.  Additionally, supports `SentenceTransformer` model object or a string matching the name of a `SentenceTransformer` model hosted on HuggingFace Model Hub. Defaults to &#39;TfidfVectorizer&#39;.</span>
@@ -1167,7 +1169,7 @@ Assuming <code>data</code> is a pandas dataframe containing samples with noisy l
 <a id="__codelineno-0-120" name="__codelineno-0-120"></a><span class="sd">                else `False`</span>
 <a id="__codelineno-0-121" name="__codelineno-0-121"></a><span class="sd">        &quot;&quot;&quot;</span>
 <a id="__codelineno-0-122" name="__codelineno-0-122"></a>        <span class="n">threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">correctness_threshold</span>
-<a id="__codelineno-0-123" name="__codelineno-0-123"></a>        <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicted_label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">y_col_name_int</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a>        <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicted_label_int&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">y_col_name_int</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span>
 <a id="__codelineno-0-124" name="__codelineno-0-124"></a>            <span class="n">row</span><span class="p">[</span><span class="s2">&quot;label_correctness_score&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
 <a id="__codelineno-0-125" name="__codelineno-0-125"></a>        <span class="p">):</span>
 <a id="__codelineno-0-126" name="__codelineno-0-126"></a>            <span class="k">return</span> <span class="kc">True</span>
@@ -1322,7 +1324,7 @@ Assuming <code>data</code> is a pandas dataframe containing samples with noisy l
 <a id="__codelineno-0-275" name="__codelineno-0-275"></a>            <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
 <a id="__codelineno-0-276" name="__codelineno-0-276"></a>        <span class="p">)</span>
 <a id="__codelineno-0-277" name="__codelineno-0-277"></a>
-<a id="__codelineno-0-278" name="__codelineno-0-278"></a>        <span class="n">input_data</span><span class="p">,</span> <span class="n">row_id_col</span><span class="p">,</span> <span class="n">y_col_name_int</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">_preprocess</span><span class="p">(</span>
+<a id="__codelineno-0-278" name="__codelineno-0-278"></a>        <span class="n">input_data</span><span class="p">,</span> <span class="n">row_id_col</span><span class="p">,</span> <span class="n">y_col_name_int</span><span class="p">,</span> <span class="n">inv_label_mapping</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">_preprocess</span><span class="p">(</span>
 <a id="__codelineno-0-279" name="__codelineno-0-279"></a>            <span class="n">input_data</span><span class="p">,</span> <span class="n">y_col_name</span><span class="o">=</span><span class="n">y_col_name</span>
 <a id="__codelineno-0-280" name="__codelineno-0-280"></a>        <span class="p">)</span>
 <a id="__codelineno-0-281" name="__codelineno-0-281"></a>
@@ -1400,18 +1402,20 @@ Assuming <code>data</code> is a pandas dataframe containing samples with noisy l
 <a id="__codelineno-0-353" name="__codelineno-0-353"></a>
 <a id="__codelineno-0-354" name="__codelineno-0-354"></a>        <span class="c1"># Add results as columns</span>
 <a id="__codelineno-0-355" name="__codelineno-0-355"></a>        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;label_correctness_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_correctness_scores</span><span class="p">)</span>
-<a id="__codelineno-0-356" name="__codelineno-0-356"></a>        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;predicted_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
-<a id="__codelineno-0-357" name="__codelineno-0-357"></a>        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;prediction_probability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">prediction_probabilities</span><span class="p">)</span>
-<a id="__codelineno-0-358" name="__codelineno-0-358"></a>
-<a id="__codelineno-0-359" name="__codelineno-0-359"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Identifying the correctly labelled samples..&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-360" name="__codelineno-0-360"></a>        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;is_label_correct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">progress_apply</span><span class="p">(</span>
-<a id="__codelineno-0-361" name="__codelineno-0-361"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_is_confident</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
-<a id="__codelineno-0-362" name="__codelineno-0-362"></a>        <span class="p">)</span>
-<a id="__codelineno-0-363" name="__codelineno-0-363"></a>
-<a id="__codelineno-0-364" name="__codelineno-0-364"></a>        <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">_postprocess</span><span class="p">(</span>
-<a id="__codelineno-0-365" name="__codelineno-0-365"></a>            <span class="n">input_data</span><span class="p">,</span>
-<a id="__codelineno-0-366" name="__codelineno-0-366"></a>            <span class="n">display_cols</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">data_with_noisy_labels</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_col_list</span><span class="p">,</span>
-<a id="__codelineno-0-367" name="__codelineno-0-367"></a>        <span class="p">)</span>
+<a id="__codelineno-0-356" name="__codelineno-0-356"></a>        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;predicted_label_int&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+<a id="__codelineno-0-357" name="__codelineno-0-357"></a>
+<a id="__codelineno-0-358" name="__codelineno-0-358"></a>        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;prediction_probability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">prediction_probabilities</span><span class="p">)</span>
+<a id="__codelineno-0-359" name="__codelineno-0-359"></a>
+<a id="__codelineno-0-360" name="__codelineno-0-360"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Identifying the correctly labelled samples..&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-361" name="__codelineno-0-361"></a>        <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;is_label_correct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">progress_apply</span><span class="p">(</span>
+<a id="__codelineno-0-362" name="__codelineno-0-362"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_is_confident</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+<a id="__codelineno-0-363" name="__codelineno-0-363"></a>        <span class="p">)</span>
+<a id="__codelineno-0-364" name="__codelineno-0-364"></a>
+<a id="__codelineno-0-365" name="__codelineno-0-365"></a>        <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">_postprocess</span><span class="p">(</span>
+<a id="__codelineno-0-366" name="__codelineno-0-366"></a>            <span class="n">input_data</span><span class="p">,</span>
+<a id="__codelineno-0-367" name="__codelineno-0-367"></a>            <span class="n">display_cols</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">data_with_noisy_labels</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_col_list</span><span class="p">,</span>
+<a id="__codelineno-0-368" name="__codelineno-0-368"></a>            <span class="n">inv_label_mapping</span><span class="o">=</span><span class="n">inv_label_mapping</span><span class="p">,</span>
+<a id="__codelineno-0-369" name="__codelineno-0-369"></a>        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -1635,7 +1639,9 @@ Assuming <code>data</code> is a pandas dataframe containing samples with noisy l
 <span class="normal"><a href="#__codelineno-0-364">364</a></span>
 <span class="normal"><a href="#__codelineno-0-365">365</a></span>
 <span class="normal"><a href="#__codelineno-0-366">366</a></span>
-<span class="normal"><a href="#__codelineno-0-367">367</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-245" name="__codelineno-0-245"></a><span class="nd">@_exception_handler</span>
+<span class="normal"><a href="#__codelineno-0-367">367</a></span>
+<span class="normal"><a href="#__codelineno-0-368">368</a></span>
+<span class="normal"><a href="#__codelineno-0-369">369</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-245" name="__codelineno-0-245"></a><span class="nd">@_exception_handler</span>
 <a id="__codelineno-0-246" name="__codelineno-0-246"></a><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
 <a id="__codelineno-0-247" name="__codelineno-0-247"></a>    <span class="bp">self</span><span class="p">,</span>
 <a id="__codelineno-0-248" name="__codelineno-0-248"></a>    <span class="n">data_with_noisy_labels</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
@@ -1668,7 +1674,7 @@ Assuming <code>data</code> is a pandas dataframe containing samples with noisy l
 <a id="__codelineno-0-275" name="__codelineno-0-275"></a>        <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
 <a id="__codelineno-0-276" name="__codelineno-0-276"></a>    <span class="p">)</span>
 <a id="__codelineno-0-277" name="__codelineno-0-277"></a>
-<a id="__codelineno-0-278" name="__codelineno-0-278"></a>    <span class="n">input_data</span><span class="p">,</span> <span class="n">row_id_col</span><span class="p">,</span> <span class="n">y_col_name_int</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">_preprocess</span><span class="p">(</span>
+<a id="__codelineno-0-278" name="__codelineno-0-278"></a>    <span class="n">input_data</span><span class="p">,</span> <span class="n">row_id_col</span><span class="p">,</span> <span class="n">y_col_name_int</span><span class="p">,</span> <span class="n">inv_label_mapping</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">_preprocess</span><span class="p">(</span>
 <a id="__codelineno-0-279" name="__codelineno-0-279"></a>        <span class="n">input_data</span><span class="p">,</span> <span class="n">y_col_name</span><span class="o">=</span><span class="n">y_col_name</span>
 <a id="__codelineno-0-280" name="__codelineno-0-280"></a>    <span class="p">)</span>
 <a id="__codelineno-0-281" name="__codelineno-0-281"></a>
@@ -1746,18 +1752,20 @@ Assuming <code>data</code> is a pandas dataframe containing samples with noisy l
 <a id="__codelineno-0-353" name="__codelineno-0-353"></a>
 <a id="__codelineno-0-354" name="__codelineno-0-354"></a>    <span class="c1"># Add results as columns</span>
 <a id="__codelineno-0-355" name="__codelineno-0-355"></a>    <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;label_correctness_score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_correctness_scores</span><span class="p">)</span>
-<a id="__codelineno-0-356" name="__codelineno-0-356"></a>    <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;predicted_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
-<a id="__codelineno-0-357" name="__codelineno-0-357"></a>    <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;prediction_probability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">prediction_probabilities</span><span class="p">)</span>
-<a id="__codelineno-0-358" name="__codelineno-0-358"></a>
-<a id="__codelineno-0-359" name="__codelineno-0-359"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Identifying the correctly labelled samples..&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-360" name="__codelineno-0-360"></a>    <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;is_label_correct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">progress_apply</span><span class="p">(</span>
-<a id="__codelineno-0-361" name="__codelineno-0-361"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_is_confident</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
-<a id="__codelineno-0-362" name="__codelineno-0-362"></a>    <span class="p">)</span>
-<a id="__codelineno-0-363" name="__codelineno-0-363"></a>
-<a id="__codelineno-0-364" name="__codelineno-0-364"></a>    <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">_postprocess</span><span class="p">(</span>
-<a id="__codelineno-0-365" name="__codelineno-0-365"></a>        <span class="n">input_data</span><span class="p">,</span>
-<a id="__codelineno-0-366" name="__codelineno-0-366"></a>        <span class="n">display_cols</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">data_with_noisy_labels</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_col_list</span><span class="p">,</span>
-<a id="__codelineno-0-367" name="__codelineno-0-367"></a>    <span class="p">)</span>
+<a id="__codelineno-0-356" name="__codelineno-0-356"></a>    <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;predicted_label_int&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+<a id="__codelineno-0-357" name="__codelineno-0-357"></a>
+<a id="__codelineno-0-358" name="__codelineno-0-358"></a>    <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;prediction_probability&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">prediction_probabilities</span><span class="p">)</span>
+<a id="__codelineno-0-359" name="__codelineno-0-359"></a>
+<a id="__codelineno-0-360" name="__codelineno-0-360"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Identifying the correctly labelled samples..&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-361" name="__codelineno-0-361"></a>    <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;is_label_correct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">progress_apply</span><span class="p">(</span>
+<a id="__codelineno-0-362" name="__codelineno-0-362"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_is_confident</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+<a id="__codelineno-0-363" name="__codelineno-0-363"></a>    <span class="p">)</span>
+<a id="__codelineno-0-364" name="__codelineno-0-364"></a>
+<a id="__codelineno-0-365" name="__codelineno-0-365"></a>    <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">_postprocess</span><span class="p">(</span>
+<a id="__codelineno-0-366" name="__codelineno-0-366"></a>        <span class="n">input_data</span><span class="p">,</span>
+<a id="__codelineno-0-367" name="__codelineno-0-367"></a>        <span class="n">display_cols</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">data_with_noisy_labels</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_col_list</span><span class="p">,</span>
+<a id="__codelineno-0-368" name="__codelineno-0-368"></a>        <span class="n">inv_label_mapping</span><span class="o">=</span><span class="n">inv_label_mapping</span><span class="p">,</span>
+<a id="__codelineno-0-369" name="__codelineno-0-369"></a>    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
