@@ -1,6 +1,6 @@
 ![](images/dqc-toolkit.svg)
 
-DQC Toolkit is a Python library and framework designed with the goal to facilitate improvement of Machine Learning models by identifying and mitigating label errors in training dataset. Currently, DQC toolkit offers `CrossValCurate` for curation of text classification datasets (binary / multi-class) using cross validation based selection.
+DQC Toolkit is a Python library and framework designed with the goal to facilitate improvement of Machine Learning models by identifying and mitigating label errors in training dataset. Currently, DQC toolkit offers `CrossValCurate` for curation of text classification datasets (binary / multi-class) using cross validation based label error detection / correction.
 
 ## Installation
 
