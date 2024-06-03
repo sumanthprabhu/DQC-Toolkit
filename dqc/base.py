@@ -10,7 +10,7 @@ class BaseCurate(ABC):
 
     Args:
         random_state (RandomState, optional): Random seed for
-                                reproducibility. Defaults to None.
+                                reproducibility. Defaults to 42.
     """
 
     def __init__(
