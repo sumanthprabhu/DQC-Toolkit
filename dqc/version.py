@@ -4,7 +4,7 @@ import sentence_transformers
 import sklearn
 import transformers
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 def show_versions():
