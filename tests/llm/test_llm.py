@@ -17,6 +17,7 @@ def test_init_failure(
     model,
     tokenizer,
     ref_col_set,
+    random_state=43,
     batch_size=1,
     max_new_tokens=1,
     verbose=False,
@@ -28,6 +29,7 @@ def test_init_failure(
             batch_size=batch_size,
             max_new_tokens=max_new_tokens,
             verbose=verbose,
+            random_state=random_state,
         )
         ds = llmc.run(
             data=data,
@@ -46,12 +48,15 @@ def test_init_success(
     prompt_variants,
     model_and_tokenizer,
     ref_col_set,
+    random_state=43,
     batch_size=1,
     max_new_tokens=1,
     verbose=False,
 ):
     model, tokenizer = model_and_tokenizer
-    llmc = LLMCurate(model=model, tokenizer=tokenizer, verbose=verbose)
+    llmc = LLMCurate(
+        model=model, tokenizer=tokenizer, random_state=random_state, verbose=verbose
+    )
     ds = llmc.run(
         data=data,
         column_to_curate="Equation",
@@ -65,6 +70,26 @@ def test_init_success(
     ds_col_list = ds.column_names
     assert len(set(ds_col_list).intersection(ref_col_set)) == 3
     assert "reliability_score" in ds_col_list
+
+
+@pytest.mark.parametrize("random_state", [None, "random_str"])
+def test_random_state_failure(
+    model_and_tokenizer,
+    random_state,
+    batch_size=1,
+    max_new_tokens=1,
+    verbose=False,
+):
+    model, tokenizer = model_and_tokenizer
+    with pytest.raises((TypeError, ValueError)):
+        llmc = LLMCurate(
+            model=model,
+            tokenizer=tokenizer,
+            batch_size=batch_size,
+            max_new_tokens=max_new_tokens,
+            verbose=verbose,
+            random_state=random_state,
+        )
 
 
 @pytest.mark.parametrize("column_to_curate", [None, 1])

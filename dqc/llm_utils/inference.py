@@ -1,8 +1,11 @@
 import gc
+import random
 from typing import Union
 
 import datasets
+import numpy as np
 import pandas as pd
+import torch
 from datasets import Dataset
 from tqdm import tqdm
 from transformers import (
@@ -11,6 +14,16 @@ from transformers import (
     BitsAndBytesConfig,
     pipeline,
 )
+
+
+def _set_seed(seed):
+    print("Seed : ", seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
 
 
 def _generate_predictions(
@@ -118,6 +131,10 @@ def infer_LLM(
     Returns:
         dataset: Dataset with generated predictions.
     """
+    if options["random_state"]:
+        _set_seed(options["random_state"])
+        del options["random_state"]
+
     text_generator = pipeline(
         "text-generation", model=model, tokenizer=tokenizer, truncation=False, **options
     )

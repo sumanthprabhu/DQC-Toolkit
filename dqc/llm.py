@@ -135,6 +135,7 @@ class LLMCurate(BaseCurate):
                     answer_start_token=answer_start_token,
                     answer_end_token=answer_end_token,
                     llm_response_cleaned_col_name=proposed_answer_col_name,
+                    random_state=self.random_state,
                     **options,
                 )
 
