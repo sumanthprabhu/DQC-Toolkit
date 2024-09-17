@@ -206,7 +206,7 @@ def test_skip_llm_inference_success(
         column_to_curate="Equation",
         llm_response_cleaned_column_list=list(ref_col_set),
         skip_llm_inference=True,
-        case_sensitive=case_sensitive,
+        scoring_params={"case_sensitive": case_sensitive},
     )
 
     ds_col_list = ds.column_names

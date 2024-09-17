@@ -82,7 +82,10 @@ class LLMCurate(BaseCurate):
         return_scores: bool = True,
         answer_start_token: str = "",
         answer_end_token: str = "",
-        scoring_method: Union[Callable[[str, str], float], str] = "exact_match",
+        scoring_params: dict = {
+            "scoring_method": "exact_match",
+            "case_sensitive": False,
+        },
         **options,
     ) -> Dataset:
         """Run LLMCurate on the input data
@@ -97,7 +100,7 @@ class LLMCurate(BaseCurate):
             return_scores (bool, optional): Indicator variable set to `True` if label confidence scores are to be computed for each label under `column_to_curate`. Defaults to True.
             answer_start_token (str, optional): Token that indicates the start of answer generation. Defaults to ''
             answer_end_token (str, optional): Token that indicates the end of answer generation. Defaults to ''
-            scoring_method (Union[Callable[[str, str], float], str], optional): A function or the string 'exact_match' to compute the confidence score. Defaults to 'exact_match'.
+            scoring_params (dict, optional): Parameters related to util function `compute_selfensembling_confidence_score` to compute confidence scores of `column_to_curate`
 
         Returns:
             Dataset: Input dataset with reference responses. If `return_scores=True`, then input dataset with reference responses and confidence scores.
@@ -168,8 +171,7 @@ class LLMCurate(BaseCurate):
                 fn_kwargs={
                     "target_column": column_to_curate,
                     "reference_column_list": llm_response_cleaned_column_list,
-                    "scoring_method": scoring_method,
-                    **options,
+                    **scoring_params,
                 },
             )
 
