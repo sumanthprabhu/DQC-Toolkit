@@ -9,7 +9,7 @@ from dqc.llm_utils import (
     _empty_ds_ensemble_handler,
     _validate_init_params,
     _validate_run_params,
-    compute_reliability_score,
+    compute_selfensembling_confidence_score,
     run_LLM,
 )
 from dqc.utils import Logger
@@ -94,13 +94,13 @@ class LLMCurate(BaseCurate):
             prompt_variants (List[str], optional): List of different LLM prompts to be used to curate the labels under `column_to_curate`. Defaults to [''].
             skip_llm_inference (bool, optional): Indicator variable to prevent re-running LLM inference. Set to `True` if artifacts from the previous run of LLMCurate needs to be reused. Else `False`. Defaults to False.
             llm_response_cleaned_column_list (list, optional): Names of the columns that will contain LLM predictions for each input prompt in `prompt_variants`. Defaults to ['reference_prediction'].
-            return_scores (bool, optional): Indicator variable set to `True` if label reliability scores are to be computed for each label under `column_to_curate`. Defaults to True.
+            return_scores (bool, optional): Indicator variable set to `True` if label confidence scores are to be computed for each label under `column_to_curate`. Defaults to True.
             answer_start_token (str, optional): Token that indicates the start of answer generation. Defaults to ''
             answer_end_token (str, optional): Token that indicates the end of answer generation. Defaults to ''
-            scoring_method (Union[Callable[[str, str], float], str], optional): A function or the string 'exact_match' to compute the reliability score. Defaults to 'exact_match'.
+            scoring_method (Union[Callable[[str, str], float], str], optional): A function or the string 'exact_match' to compute the confidence score. Defaults to 'exact_match'.
 
         Returns:
-            Dataset: Input dataset with reference responses. If `return_scores=True`, then input dataset with reference responses and reliability scores.
+            Dataset: Input dataset with reference responses. If `return_scores=True`, then input dataset with reference responses and confidence scores.
         """
         if not skip_llm_inference:
             empty_string_col_list = _validate_run_params(
@@ -161,14 +161,15 @@ class LLMCurate(BaseCurate):
             _empty_ds_ensemble_handler(len(self.ds_ensemble) == 0, skip_llm_inference)
 
             logger.info(
-                "Computing reliability scores using the LLM reference responses.."
+                "Computing confidence scores using the LLM reference responses.."
             )
             self.ds_ensemble = self.ds_ensemble.map(
-                compute_reliability_score,
+                compute_selfensembling_confidence_score,
                 fn_kwargs={
                     "target_column": column_to_curate,
                     "reference_column_list": llm_response_cleaned_column_list,
                     "scoring_method": scoring_method,
+                    **options,
                 },
             )
 

@@ -39,7 +39,7 @@ def prompt_variants():
 
 
 @pytest.fixture(scope="session")
-def reliability_dataset_row():
+def confidence_dataset_row():
     return {
         "target_text": "sample sentence.",
         "reference_1": "sample sentence.",

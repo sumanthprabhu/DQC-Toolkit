@@ -32,7 +32,7 @@ def _compute_custom_match_score(
     Args:
         target_text (str): The text string that will be compared to each text in `reference_text_list`.
         reference_text_list (List[str]): List of text strings that need to be individually matched against `target_text`
-        scoring_method (Union[Callable, str]): A function or the string 'exact_match' to compute the reliability score. Defaults to 'exact_match'.
+        scoring_method (Union[Callable, str]): A function or the string 'exact_match' to compute the confidence score. Defaults to 'exact_match'.
 
     Returns:
         float: Score between 0 and 1 indicating how closely the texts in `reference_text_list` match the `target_text`. A score of 1 means perfect matches for all entries,
@@ -44,26 +44,27 @@ def _compute_custom_match_score(
     return matches.mean()
 
 
-def compute_reliability_score(
+def compute_selfensembling_confidence_score(
     example: datasets.formatting.formatting.LazyRow,
     target_column: str,
     reference_column_list: List[str],
     scoring_method: Union[Callable[[str, str], float], str] = "exact_match",
     case_sensitive: bool = False,
+    **options,
 ) -> float:
-    """Util function to assess the reliability of a given target text using LLM generated reference texts.
+    """Util function to compute confidence score of a given target text using LLM generated reference texts.
 
     Args:
         example (datasets.formatting.formatting.LazyRow): A row of data from a dataset containing the target and reference texts.
-        target_column (str): Name of the column containing the target text for estimation of reliability.
+        target_column (str): Name of the column containing the target text for estimation of confidence score.
         reference_column_list (List[str]): Names of the columns containing the reference texts to be compared with the target text.
-        scoring_method (Union[Callable[[str, str], float], str], optional): A function or the string 'exact_match' to compute the reliability score. Defaults to 'exact_match'.
+        scoring_method (Union[Callable[[str, str], float], str], optional): A function or the string 'exact_match' to compute the confidence score. Defaults to 'exact_match'.
         case_sensitive (bool, optional): `True` if string comparisons need to be case aware. Else `False`. Defaults to `False`
     Raises:
         ValueError: If `scoring_method` is neither 'exact_match' nor a valid callable function
 
     Returns:
-        float: Score between 0 and 1 quantifying the reliability of the target text
+        float: Score between 0 and 1 quantifying the confidence score for the target text
     """
     if not callable(scoring_method) and scoring_method != "exact_match":
         raise ValueError(
@@ -90,4 +91,4 @@ def compute_reliability_score(
             target_text, reference_text_list, scoring_method
         )
 
-    return {"reliability_score": score}
+    return {"confidence_score": score}

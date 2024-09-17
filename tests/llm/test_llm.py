@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 
 from dqc import LLMCurate
-from dqc.llm_utils import compute_reliability_score
+from dqc.llm_utils import compute_selfensembling_confidence_score
 
 
 @pytest.mark.parametrize("model", [None, "random_str", 1])
@@ -69,7 +69,7 @@ def test_init_success(
 
     ds_col_list = ds.column_names
     assert len(set(ds_col_list).intersection(ref_col_set)) == 3
-    assert "reliability_score" in ds_col_list
+    assert "confidence_score" in ds_col_list
 
 
 @pytest.mark.parametrize("random_state", [None, "random_str"])
@@ -145,7 +145,7 @@ def test_dscolmap_failure(
 
         ds_col_list = ds.column_names
         assert len(set(ds_col_list).intersection(ref_col_set)) == 3
-        assert "reliability_score" in ds_col_list
+        assert "confidence_score" in ds_col_list
 
 
 @pytest.mark.parametrize("p_variant", ["invalid_count", "invalid_prompt"])
@@ -175,15 +175,17 @@ def test_prompt_failure(
 
         ds_col_list = ds.column_names
         assert len(set(ds_col_list).intersection(ref_col_set)) == 3
-        assert "reliability_score" in ds_col_list
+        assert "confidence_score" in ds_col_list
 
 
+@pytest.mark.parametrize("case_sensitive", [True, False])
 def test_skip_llm_inference_success(
     data,
     ds_column_mapping,
     prompt_variants,
     model_and_tokenizer,
     ref_col_set,
+    case_sensitive,
     batch_size=1,
     max_new_tokens=1,
     verbose=False,
@@ -204,11 +206,12 @@ def test_skip_llm_inference_success(
         column_to_curate="Equation",
         llm_response_cleaned_column_list=list(ref_col_set),
         skip_llm_inference=True,
+        case_sensitive=case_sensitive,
     )
 
     ds_col_list = ds.column_names
     assert len(set(ds_col_list).intersection(ref_col_set)) == 3
-    assert "reliability_score" in ds_col_list
+    assert "confidence_score" in ds_col_list
 
 
 def test_noscores_success(
@@ -236,7 +239,7 @@ def test_noscores_success(
 
     ds_col_list = ds.column_names
     assert len(set(ds_col_list).intersection(ref_col_set)) == 3
-    assert "reliability_score" not in ds_col_list
+    assert "confidence_score" not in ds_col_list
 
 
 @pytest.mark.parametrize("answer_start_token", [None, "[EQUATION]"])
@@ -270,7 +273,7 @@ def test_answertoken_success(
 
     ds_col_list = ds.column_names
     assert len(set(ds_col_list).intersection(ref_col_set)) == 3
-    assert "reliability_score" not in ds_col_list
+    assert "confidence_score" not in ds_col_list
 
 
 def test_llmc_run_success(
@@ -299,7 +302,7 @@ def test_llmc_run_success(
 
     ds_col_list = ds.column_names
     assert len(set(ds_col_list).intersection(ref_col_set)) == 3
-    assert "reliability_score" in ds_col_list
+    assert "confidence_score" in ds_col_list
 
 
 @pytest.mark.parametrize("verbose", [True, False])
@@ -327,7 +330,7 @@ def test_verbosity(
 
     ds_col_list = ds.column_names
     assert len(set(ds_col_list).intersection(ref_col_set)) == 3
-    assert "reliability_score" in ds_col_list
+    assert "confidence_score" in ds_col_list
 
 
 def exact_match(text1: str, text2: str) -> float:
@@ -339,34 +342,33 @@ def scoring_method() -> Callable[[str, str], float]:
     return exact_match
 
 
-def test_exact_match_case_insensitive(reliability_dataset_row, scoring_method):
-    res = compute_reliability_score(
-        example=reliability_dataset_row,
+def test_exact_match_case_insensitive(confidence_dataset_row, scoring_method):
+    res = compute_selfensembling_confidence_score(
+        example=confidence_dataset_row,
         target_column="target_text",
         reference_column_list=["reference_1", "reference_2", "reference_3"],
         scoring_method=scoring_method,
     )
 
-    assert res["reliability_score"] == pytest.approx(2 / 3)
+    assert res["confidence_score"] == pytest.approx(2 / 3)
 
 
-def test_exact_match_case_sensitive(reliability_dataset_row, scoring_method):
-    res = compute_reliability_score(
-        example=reliability_dataset_row,
+def test_exact_match_case_sensitive(confidence_dataset_row, scoring_method):
+    res = compute_selfensembling_confidence_score(
+        example=confidence_dataset_row,
         target_column="target_text",
         reference_column_list=["reference_1", "reference_2", "reference_3"],
         scoring_method=scoring_method,
         case_sensitive=True,
     )
 
-    # assert 0 <= res['reliability_score'] <= 1
-    assert res["reliability_score"] == pytest.approx(1 / 3)
+    assert res["confidence_score"] == pytest.approx(1 / 3)
 
 
-def test_invalid_scoring_method(reliability_dataset_row):
+def test_invalid_scoring_method(confidence_dataset_row):
     with pytest.raises(ValueError):
-        compute_reliability_score(
-            example=reliability_dataset_row,
+        compute_selfensembling_confidence_score(
+            example=confidence_dataset_row,
             target_column="target_text",
             reference_column_list=["reference_1", "reference_2", "reference_3"],
             scoring_method="invalid_method",
