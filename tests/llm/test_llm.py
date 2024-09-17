@@ -333,6 +333,14 @@ def test_verbosity(
     assert "confidence_score" in ds_col_list
 
 
+def test_import_star():
+    try:
+        exec("from dqc import *")
+        exec("from dqc.llm_utils import *")
+    except Exception as e:
+        pytest.fail(f"Importing with * raised an error: {e}")
+
+
 def exact_match(text1: str, text2: str) -> float:
     return 1.0 if text1 == text2 else 0.0
 

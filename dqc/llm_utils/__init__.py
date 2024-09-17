@@ -8,7 +8,7 @@ from .inference import build_LLM_prompt, infer_LLM, run_LLM
 
 __all__ = [
     "build_LLM_prompt",
-    "selfensembling_confidence_score",
+    "compute_selfensembling_confidence_score",
     "infer_LLM",
     "run_LLM",
 ]
