@@ -11,7 +11,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 @pytest.fixture(scope="session")
 def data():
     dataset = "ChilleD/SVAMP"
-    dset = load_dataset(dataset)
+    dset = load_dataset(dataset, trust_remote_code=True)
     data = pd.DataFrame(dset["test"])[["question_concat", "Equation"]]
     return data.loc[:10]
 
