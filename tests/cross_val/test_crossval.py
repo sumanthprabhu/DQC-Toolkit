@@ -69,13 +69,23 @@ def run_cvc(
     label_column,
 ):
     sampled_data = sample_dataframe_for_stratified_split(data, n_splits)
-    cvc = CrossValCurate(
-        curate_feature_extractor=curate_feature_extractor,
-        curate_model=curate_model,
-        n_splits=n_splits,
-        calibration_method=calibration_method,
-        random_state=random_state,
-    )
+
+    if random_state:
+        cvc = CrossValCurate(
+            curate_feature_extractor=curate_feature_extractor,
+            curate_model=curate_model,
+            n_splits=n_splits,
+            calibration_method=calibration_method,
+            random_state=random_state,
+        )
+    else:
+        cvc = CrossValCurate(
+            curate_feature_extractor=curate_feature_extractor,
+            curate_model=curate_model,
+            n_splits=n_splits,
+            calibration_method=calibration_method,
+        )
+
     data_curated = cvc.fit_transform(sampled_data, y_col_name=label_column)
 
     # Check if dataframe is return
@@ -147,7 +157,7 @@ def test_crossvalcurate_success_feature_and_model(
     curate_model,
     n_splits,
     calibration_method=None,
-    random_state=None,
+    random_state=42,
     label_column="label",
 ):
     run_cvc(
@@ -162,7 +172,7 @@ def test_crossvalcurate_success_feature_and_model(
 
 
 @pytest.mark.parametrize("calibration_method", [None, "calibrate_using_baseline"])
-@pytest.mark.parametrize("random_state", [None, 1])
+@pytest.mark.parametrize("random_state", [1])
 def test_crossvalcurate_success_calibration_and_randomstate(
     data,
     calibration_method,
@@ -183,12 +193,31 @@ def test_crossvalcurate_success_calibration_and_randomstate(
     )
 
 
+def test_crossvalcurate_success_no_randomstate(
+    data,
+    calibration_method=None,
+    curate_feature_extractor="TfidfVectorizer",
+    curate_model=LogisticRegression(),
+    n_splits=5,
+    label_column="label",
+):
+    run_cvc(
+        data,
+        curate_feature_extractor,
+        curate_model,
+        n_splits,
+        calibration_method,
+        random_state=None,
+        label_column=label_column,
+    )
+
+
 @pytest.mark.parametrize("label_column", ["label_text"])
 def test_crossvalcurate_success_text_label(
     data,
     label_column,
     calibration_method=None,
-    random_state=None,
+    random_state=42,
     curate_feature_extractor="TfidfVectorizer",
     curate_model=LogisticRegression(),
     n_splits=5,
@@ -217,7 +246,7 @@ def test_crossvalcurate_success_sentence_transformers(
     calibration_method,
     curate_feature_extractor,
     curate_model=LogisticRegression(),
-    random_state=None,
+    random_state=42,
     n_splits=5,
     label_column="label",
 ):
@@ -312,6 +341,14 @@ def test_add_asymmetric_noise(data, noise_prob, random_state):
         observed_noise_ratio, float
     )
     assert len(noisy_labels) == len(data["label"])
+
+
+def test_import_star():
+    try:
+        exec("from dqc import *")
+        exec("from dqc.utils import *")
+    except Exception as e:
+        pytest.fail(f"Importing with * raised an error: {e}")
 
 
 def test_show_versions():
