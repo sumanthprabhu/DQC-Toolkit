@@ -26,7 +26,7 @@ class LLMCurate(BaseCurate):
 
     Examples:
      ```python
-    
+
     llmc = LLMCurate(model, tokenizer)
     ds = llmc.run(
             data,
@@ -43,14 +43,14 @@ class LLMCurate(BaseCurate):
     where
     * `model` and `tokenizer` are the instantiated LLM model and tokenizer objects respectively
     * `data` is a pandas dataframe containing samples with our target text for curation under column `column_to_curate`
-    * `ds_column_mapping` is the dictionary mapping of entities used in the LLM prompt and the corresponding columns in `data`. For example, `ds_column_mapping={'INPUT' : 'input_column'}` would imply that text under `input_column` in `data` would be passed to the LLM in the format `"[INPUT]row['input_column'][/INPUT]"` for each `row` in `data` 
+    * `ds_column_mapping` is the dictionary mapping of entities used in the LLM prompt and the corresponding columns in `data`. For example, `ds_column_mapping={'INPUT' : 'input_column'}` would imply that text under `input_column` in `data` would be passed to the LLM in the format `"[INPUT]row['input_column'][/INPUT]"` for each `row` in `data`
     * `prompt_variants` is the list of LLM prompts to be used to curate `column_to_curate` and `llm_response_cleaned_column_list` is the corresponding list of column names to store the reference responses generated using each prompt
     * `answer_start_token` and `answer_end_token` are optional  text phrases representing the start and end of the answer respectively.
 
     `ds` is a dataset object with the following additional features -
     1. Feature for each column name in `llm_response_cleaned_column_list`
-    2. LLM Confidence score for each text in `column_to_curate` 
-    
+    2. LLM Confidence score for each text in `column_to_curate`
+
     """
 
     def __init__(
