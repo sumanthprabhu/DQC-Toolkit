@@ -10,10 +10,10 @@ def _validate_ds_column_mapping(data: pd.DataFrame, ds_column_mapping: dict):
 
     Args:
         data (Union[pd.DataFrame, Dataset]): Input data for LLM based curation
-        ds_column_mapping (dict): Mapping of entities to be used in the LLM prompt to the corresponding columns in the input data.
+        ds_column_mapping (dict): Mapping of entities to be used in the LLM prompt and the corresponding columns in the input data.
 
     Raises:
-        ValueError: If any of the enities or column names in `ds_column_mapping` are invalid.
+        ValueError: If any of the entities or column names in `ds_column_mapping` are invalid.
     """
     valid_column_names = data.columns
 
@@ -44,7 +44,7 @@ def _check_null_values(
     Args:
         data (pd.DataFrame): Input data for LLM based curation
         column_to_curate (str): Column name in `data` with the text that needs to be curated
-        ds_column_mapping (dict): Mapping of entities to be used in the LLM prompt to the corresponding columns in the input data
+        ds_column_mapping (dict): Mapping of entities to be used in the LLM prompt and the corresponding columns in the input data
 
     Raises:
         ValueError: If null values are found in the data
@@ -138,7 +138,7 @@ def _validate_run_params(
         data (pd.DataFrame): Input data for LLM based curation
         column_to_curate (str): Column name in `data` with the text that needs to be curated
         prompt_variants (List[str]): List of different LLM prompts to be used to curate the labels under `column_to_curate`..
-        ds_column_mapping (dict): Mapping of entities to be used in the LLM prompt to the corresponding columns in the input data
+        ds_column_mapping (dict): Mapping of entities to be used in the LLM prompt and the corresponding columns in the input data
         llm_response_cleaned_column_list (list): Names of the columns that will contain LLM predictions for each input prompt in `prompt_variants`
 
     Returns:

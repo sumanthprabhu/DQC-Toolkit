@@ -6,7 +6,9 @@ nav:
   - DQC toolkit: index.md
   - API Documentation:
       - Cross Validation based Curation: api/crossval.md
-      - Util: api/util/utils.md
+      - LLM based Curation: api/llm.md
+      - Utils: api/utils/utils.md
+      - LLM Utils: api/llm_utils/llm_utils.md
 theme:
   name: material
   logo: images/dqc-toolkit-favicon.svg
