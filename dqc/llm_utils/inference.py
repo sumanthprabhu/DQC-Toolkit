@@ -204,7 +204,7 @@ def run_LLM(
         val_data (Union[pd.DataFrame, Dataset]): Validation data with labels
         model (AutoModelForCausalLM): LLM artifact.
         tokenizer (Autotokenizer) : LLM tokenizer object
-        ds_column_mapping (dict): prompt entity mapping
+        ds_column_mapping (dict): Dictionary mapping prompt entities to dataset column names.
         prompt_template_prefix (Union[str, None], optional): Text instruction to prepend to each transformed input text sample. Defaults to "".
         llm_prompt_col_name (str, optional): Name of the column with the built LLM prompts. Defaults to 'llm_prompt'
         llm_response_raw_col_name (str, optional): Name of the column containing prediction. Defaults to 'llm_response'.

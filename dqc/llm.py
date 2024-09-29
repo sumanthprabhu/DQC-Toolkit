@@ -25,7 +25,32 @@ class LLMCurate(BaseCurate):
         verbose (bool, optional): Sets the verbosity level during execution. `True` indicates logging level INFO and `False` indicates logging level 'WARNING'. Defaults to False.
 
     Examples:
+     ```python
+    
+    llmc = LLMCurate(model, tokenizer)
+    ds = llmc.run(
+            data,
+            column_to_curate,
+            ds_column_mapping,
+            prompt_variants,
+            llm_response_cleaned_column_list,
+            answer_start_token,
+            answer_end_token,
+            batch_size,
+            max_new_tokens
+            )
+    ```
+    where
+    * `model` and `tokenizer` are the instantiated LLM model and tokenizer objects respectively
+    * `data` is a pandas dataframe containing samples with our target text for curation under column `column_to_curate`
+    * `ds_column_mapping` is the dictionary mapping of entities used in the LLM prompt and the corresponding columns in `data`. For example, `ds_column_mapping={'INPUT' : 'input_column'}` would imply that text under `input_column` in `data` would be passed to the LLM in the format `"[INPUT]row['input_column'][/INPUT]"` for each `row` in `data` 
+    * `prompt_variants` is the list of LLM prompts to be used to curate `column_to_curate` and `llm_response_cleaned_column_list` is the corresponding list of column names to store the reference responses generated using each prompt
+    * `answer_start_token` and `answer_end_token` are optional  text phrases representing the start and end of the answer respectively.
 
+    `ds` is a dataset object with the following additional features -
+    1. Feature for each column name in `llm_response_cleaned_column_list`
+    2. LLM Confidence score for each text in `column_to_curate` 
+    
     """
 
     def __init__(
@@ -93,7 +118,7 @@ class LLMCurate(BaseCurate):
         Args:
             column_to_curate (str): Column name in `data` with the text that needs to be curated
             data (Union[pd.DataFrame, Dataset]): Input data for LLM based curation
-            ds_column_mapping (dict, optional): Mapping of entities to be used in the LLM prompt to the corresponding columns in the input data. Defaults to {}.
+            ds_column_mapping (dict, optional): Mapping of entities to be used in the LLM prompt and the corresponding columns in the input data. Defaults to {}.
             prompt_variants (List[str], optional): List of different LLM prompts to be used to curate the labels under `column_to_curate`. Defaults to [''].
             skip_llm_inference (bool, optional): Indicator variable to prevent re-running LLM inference. Set to `True` if artifacts from the previous run of LLMCurate needs to be reused. Else `False`. Defaults to False.
             llm_response_cleaned_column_list (list, optional): Names of the columns that will contain LLM predictions for each input prompt in `prompt_variants`. Defaults to ['reference_prediction'].
