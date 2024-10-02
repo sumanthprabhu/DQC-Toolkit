@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://sumanthprabhu.github.io/DQC-Toolkit/v0.2.0/</loc>
+         <lastmod>2024-10-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://sumanthprabhu.github.io/DQC-Toolkit/v0.2.0/api/crossval/</loc>
+         <lastmod>2024-10-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://sumanthprabhu.github.io/DQC-Toolkit/v0.2.0/api/llm/</loc>
+         <lastmod>2024-10-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://sumanthprabhu.github.io/DQC-Toolkit/v0.2.0/api/llm_utils/llm_utils/</loc>
+         <lastmod>2024-10-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://sumanthprabhu.github.io/DQC-Toolkit/v0.2.0/api/utils/utils/</loc>
+         <lastmod>2024-10-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>
