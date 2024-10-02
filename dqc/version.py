@@ -1,5 +1,6 @@
 import platform
 
+import accelerate
 import sentence_transformers
 import sklearn
 import transformers
@@ -20,6 +21,7 @@ def show_versions():
         "dqc-toolkit": __version__,
         "transformers": transformers.__version__,
         "sentence_transformers": sentence_transformers.__version__,
+        "accelerate": accelerate.__version__,
         "scikit-learn": sklearn.__version__,
     }
 

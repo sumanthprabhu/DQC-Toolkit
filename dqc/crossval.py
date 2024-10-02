@@ -10,8 +10,7 @@ from sklearn.preprocessing import normalize
 from tqdm import tqdm
 
 from dqc.base import BaseCurate
-from dqc.utils import (
-    Logger,
+from dqc.crossval_utils import (
     SentenceTransformerVectorizer,
     _data_splitter,
     _DataProcessor,
@@ -20,8 +19,9 @@ from dqc.utils import (
     _get_pipeline,
     _is_valid,
 )
+from dqc.utils import Logger
 
-logger = Logger("C2")
+logger = Logger("DQC-Toolkit")
 
 tqdm.pandas()
 
