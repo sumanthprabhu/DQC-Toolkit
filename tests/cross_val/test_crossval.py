@@ -353,4 +353,4 @@ def test_import_star():
 
 def test_show_versions():
     dqc_info = dqc.show_versions()
-    assert type(dqc_info) == dict and len(dqc_info.keys()) == 7
+    assert type(dqc_info) == dict and len(dqc_info.keys()) == 8

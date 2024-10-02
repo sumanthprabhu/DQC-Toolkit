@@ -7,7 +7,7 @@
 ![](/docs/images/dqc-toolkit.svg)
 
 
-DQC Toolkit is a Python library and framework designed with the goal to facilitate improvement of Machine Learning models by identifying and mitigating label errors in training dataset. Currently, DQC toolkit offers `CrossValCurate` and `LLMCurate`. `CrossValCurate` can be used for label error detection / correction in text classification (binary / multi-class) based on cross validation. `LLMCurate` extends [PEDAL](https://arxiv.org/abs/2408.08869) to compute LLM-based confidence scores for free-text labels.
+DQC Toolkit is a Python library and framework designed with the goal to facilitate improvement of Machine Learning models by identifying and mitigating label errors in training dataset. Currently, DQC toolkit offers `CrossValCurate` and `LLMCurate`. `CrossValCurate` can be used for label error detection / correction in text classification (binary / multi-class) based on cross validation. `LLMCurate` extends [PEDAL: Enhancing Greedy Decoding with Large Language Models using Diverse Exemplars](https://arxiv.org/abs/2408.08869) to compute LLM-based confidence scores for free-text labels.
 
 ## Installation
 
